@@ -1,0 +1,127 @@
+.key-details {
+  flex: 1;
+  padding: 2rem;
+  border-left: 1px solid #333;
+  overflow-y: auto;
+}
+
+.key-details.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state {
+  text-align: center;
+  color: #666;
+}
+
+.empty-state h2 {
+  color: #999;
+  margin-bottom: 1rem;
+}
+
+.empty-icon {
+  margin-top: 2rem;
+  font-size: 3rem;
+  color: #444;
+}
+
+.key-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #333;
+}
+.key-details-header h2 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+.key-details-header h2 {
+  text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+.key-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.key-actions button {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: 1px solid #666;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.key-actions button:hover {
+  background-color: #333;
+}
+
+.key-info {
+  margin-bottom: 2rem;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 0.5rem;
+}
+
+.label {
+  width: 100px;
+  color: #999;
+}
+
+.value {
+  color: #fff;
+  font-weight: bold;
+}
+
+.key-value-section h3 {
+  margin-bottom: 1rem;
+  color: #999;
+}
+
+.key-value {
+  background-color: #0d0d0d;
+  border: 1px solid #333;
+  padding: 1rem;
+  border-radius: 4px;
+  color: rgb(255, 255, 255);
+  font-family: 'Courier New', monospace;
+  overflow-x: auto;
+}
+
+.edit-section textarea {
+  width: 100%;
+  background-color: #0d0d0d;
+  border: 1px solid #333;
+  color: rgb(255, 255, 255);
+  padding: 1rem;
+  font-family: 'Courier New', monospace;
+  resize: vertical;
+}
+
+.save-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 2rem;
+  background-color: rgb(19, 0, 0);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.save-btn:hover {
+  background-color: rgb(46, 48, 46);
+}

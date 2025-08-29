@@ -1,0 +1,163 @@
+.dashboard {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: 'Courier New', monospace;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #333;
+  background-color: #0d0d0d;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.redis-icon {
+  font-size: 1.5rem;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+
+.terminal-toggle {
+  background: none;
+  border: 1px solid #666;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.terminal-toggle:hover {
+  background-color: #333;
+}
+
+.dashboard-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.redis-logo {
+  height: 40px; 
+  width: auto;
+  object-fit: contain;
+}
+
+.redis-logo:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; 
+}
+.server-info-bar {
+  margin-left: 1rem;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.server-info-bar {
+  margin-left: 1rem;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 0.9rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.server-info-bar:hover {
+  color: #fff;
+}
+
+.server-stat {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.server-stat .label {
+  font-weight: bold;
+  margin-right: 0.25rem;
+}
+
+.progress-bar {
+  width: 120px;
+  height: 6px;
+  background: #333;
+  border-radius: 3px;
+  margin-top: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #e34c4c; /* redis red */
+  transition: width 0.5s ease;
+}
+
+.server-info-expanded {
+  background-color: #111;
+  border-top: 1px solid #333;
+  padding: 1rem 2rem;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.info-section {
+  margin-bottom: 1rem;
+}
+
+.info-section h3 {
+  color: #e34c4c;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.25rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.info-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-key {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.info-value {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #fff;
+}
+
