@@ -51,10 +51,19 @@ const Dashboard = () => {
     setSelectedKey(newKey);
   };
 
+  // Normalize response into array of lines
+  const normalizeResponse = (response) => {
+    if (!response) return [];
+    return Array.isArray(response)
+      ? response
+      : response.split(/\r?\n/).filter((line) => line.trim() !== "");
+  };
+
   // Parse INFO response into a map
   const parseInfo = (response) => {
+    const lines = normalizeResponse(response);
     const map = {};
-    response.forEach((line) => {
+    lines.forEach((line) => {
       if (!line.startsWith("#") && line.includes(":")) {
         const [k, v] = line.split(":");
         map[k] = v;
@@ -111,58 +120,59 @@ const Dashboard = () => {
       </header>
 
       {showFullInfo && serverInfo && (
-  <div className="server-info-expanded">
-    {(() => {
-      const sections = {};
-      const ignoreKeys = ["master_replid", "used_memory"]; // ignore noisy/duplicate
+        <div className="server-info-expanded">
+          {(() => {
+            const sections = {};
+            const ignoreKeys = ["master_replid", "used_memory"]; // ignore noisy/duplicate
 
-      serverInfo.response.forEach(line => {
-        if (line.startsWith("#")) {
-          const section = line.replace("#", "").trim();
-          sections[section] = [];
-        } else if (line.includes(":")) {
-          let [key, value] = line.split(":");
-          key = key.trim();
-          value = value.trim();
+            const lines = normalizeResponse(serverInfo.response);
 
-          if (!ignoreKeys.includes(key)) {
-            // prettify key
-            let prettyKey = key.replace(/_/g, " ");
-            prettyKey = prettyKey
-              .split(" ")
-              .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-              .join(" ");
+            lines.forEach((line) => {
+              if (line.startsWith("#")) {
+                const section = line.replace("#", "").trim();
+                sections[section] = [];
+              } else if (line.includes(":")) {
+                let [key, value] = line.split(":");
+                key = key.trim();
+                value = value.trim();
 
-            // special rename
-            if (key === "used_memory_human") {
-              prettyKey = "Used Memory (MB)";
-            }
+                if (!ignoreKeys.includes(key)) {
+                  // prettify key
+                  let prettyKey = key.replace(/_/g, " ");
+                  prettyKey = prettyKey
+                    .split(" ")
+                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                    .join(" ");
 
-            const currentSection = Object.keys(sections).pop();
-            if (currentSection) {
-              sections[currentSection].push({ key: prettyKey, value });
-            }
-          }
-        }
-      });
+                  // special rename
+                  if (key === "used_memory_human") {
+                    prettyKey = "Used Memory (MB)";
+                  }
 
-      return Object.entries(sections).map(([section, items]) => (
-        <div key={section} className="info-section">
-          <h3>{section}</h3>
-          <div className="info-grid">
-            {items.map(({ key, value }) => (
-              <div key={key} className="info-card">
-                <span className="info-key">{key}</span>
-                <span className="info-value">{value}</span>
+                  const currentSection = Object.keys(sections).pop();
+                  if (currentSection) {
+                    sections[currentSection].push({ key: prettyKey, value });
+                  }
+                }
+              }
+            });
+
+            return Object.entries(sections).map(([section, items]) => (
+              <div key={section} className="info-section">
+                <h3>{section}</h3>
+                <div className="info-grid">
+                  {items.map(({ key, value }) => (
+                    <div key={key} className="info-card">
+                      <span className="info-key">{key}</span>
+                      <span className="info-value">{value}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
+            ));
+          })()}
         </div>
-      ));
-    })()}
-  </div>
-)}
-
+      )}
 
       <div className="dashboard-content">
         <Sidebar
