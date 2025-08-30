@@ -64,7 +64,5 @@ http://localhost:5173/
 
 ## 🎥 Demo
 
-A short demo of the UI can be found here:
-```
-frontend/src/demoui.web
+![Dashboard Demo](https://github.com/Momensamir12/Redis-UI-Dashboard/raw/master/frontend/src/assets/uidemo.gif)
 ```
