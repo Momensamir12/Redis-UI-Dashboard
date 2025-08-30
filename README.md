@@ -1,8 +1,8 @@
 # RedisDashboard (UI)
 
-A small React UI built with Vite to showcase a custom Redis-compatible server implementation (Codecrafter challenge). The UI provides a simple dashboard for browsing keys, viewing server INFO, inspecting key values, and running arbitrary Redis commands.
+A small React UI to showcase a custom Redis-compatible server implementation (Codecrafter challenge). The UI provides a simple dashboard for browsing keys, viewing server INFO, inspecting key values, and running arbitrary Redis commands.
 
-This repository contains a backend (Express) and a frontend (Vite + React). The frontend is intentionally defensive about API shapes so it can tolerate responses from the custom Redis clone.
+
 
 ## Features
 - Keys list with basic metadata (name, type)
@@ -10,8 +10,7 @@ This repository contains a backend (Express) and a frontend (Vite + React). The 
 - Simple command terminal to run arbitrary Redis commands
 - Server INFO display and lightweight stats bar
 - Create / delete keys and basic set operations from the UI
-- Defensive API client to avoid UI race conditions when backend responses vary
-
+- 
 ## Quickstart
 
 Prerequisites:
@@ -32,3 +31,9 @@ start frontend :
 cd frontend
 npm install
 npm run dev
+
+Techstack :
+- Frontend : React vue
+- Backend : Nodejs
+
+access the ui in the browser at http://localhost:5173/
