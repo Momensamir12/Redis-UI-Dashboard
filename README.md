@@ -1,39 +1,33 @@
 # RedisDashboard (UI)
 
-A small React UI to showcase a custom Redis-compatible server implementation (Codecrafter challenge). The UI provides a simple dashboard for browsing keys, viewing server INFO, inspecting key values, and running arbitrary Redis commands.
+A lightweight React-based dashboard for interacting with a custom **Redis-compatible server implementation** (built as part of the Codecrafters Redis challenge).  
+The UI provides a simple way to browse keys, inspect values, monitor server stats, and run arbitrary Redis commands.
 
+---
 
+## ✨ Features
+-  **Keys list** with basic metadata (name, type)  
+-  **Key details viewer** for common types (string, list, set, hash, zset, stream)  
+-  **Command terminal** to run arbitrary Redis commands  
+-  **Server INFO & stats bar** (role, memory usage, connected clients, etc.)  
+-  **Create and delete keys** directly from the UI  
+-  **Basic set operations** from the UI  
 
-## Features
-- Keys list with basic metadata (name, type)
-- Key details viewer for common types (string, list, set, hash, zset, stream)
-- Simple command terminal to run arbitrary Redis commands
-- Server INFO display and lightweight stats bar
-- Create / delete keys and basic set operations from the UI
-- 
-## Quickstart
+---
 
-Prerequisites:
-- Node 18+ (or compatible)
-- npm
+## 🚀 Quickstart
 
-Start backend:
-````bash
+### Start the backend
+```bash
 # from repo root
 cd backend
 npm install
 npm run dev
-
-start frontend :
-
-````bash
+Start the frontend
+bash
+Copy code
 # from repo root
 cd frontend
 npm install
 npm run dev
-
-Techstack :
-- Frontend : React vue
-- Backend : Nodejs
-
-access the ui in the browser at http://localhost:5173/
+Open the UI in your browser at: http://localhost:5173/
