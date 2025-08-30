@@ -11,8 +11,7 @@ The UI provides a simple way to browse keys, inspect values, monitor server stat
 - **Key details viewer** for common types (string, list, set, hash, zset, stream)  
 - **Command terminal** to run arbitrary Redis commands  
 - **Server INFO & stats bar** (role, memory usage, connected clients, etc.)  
-- **Create and delete keys** directly from the UI  
-- **Basic set operations** from the UI  
+- **Create lists, sorted sets, streams** directly from the UI  
 
 ---
 
