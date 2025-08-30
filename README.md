@@ -1,6 +1,6 @@
 # RedisDashboard (UI)
 
-A lightweight React-based dashboard for interacting with a custom **Redis-compatible server implementation** (built as part of the Codecrafters Redis challenge).  
+A  simple dashboard for interacting with my redis implementation (built as part of the Codecrafters Redis challenge).  
 The UI provides a simple way to browse keys, inspect values, monitor server stats, and run arbitrary Redis commands.
 
 ---
@@ -57,7 +57,7 @@ http://localhost:5173/
 
 ## 🛠 Tech Stack
 
-- **Frontend:** React
+- **Frontend:** React vue
 - **Backend:** Node.js
 
 ---
