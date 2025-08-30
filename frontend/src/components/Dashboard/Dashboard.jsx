@@ -17,28 +17,49 @@ const Dashboard = () => {
   const [showFullInfo, setShowFullInfo] = useState(false);
 
   useEffect(() => {
-    fetchKeys();
-    fetchServerInfo();
-    const interval = setInterval(fetchServerInfo, 5000); // auto-refresh every 5s
-    return () => clearInterval(interval);
+    let mounted = true;
+
+    const load = async () => {
+      // fetch keys first (primary UI), then server info to avoid race
+      await fetchKeys(mounted);
+      if (!mounted) return;
+      await fetchServerInfo(mounted);
+      if (!mounted) return;
+      // periodic server info refresh
+      const id = setInterval(() => mounted && fetchServerInfo(mounted), 5000);
+      return () => clearInterval(id);
+    };
+
+    const cleanupPromise = load();
+    return () => {
+      mounted = false;
+      if (cleanupPromise && typeof cleanupPromise.then === "function") cleanupPromise.then((c) => c && c());
+    };
   }, []);
 
-  const fetchKeys = async () => {
+  const fetchKeys = async (mounted = true) => {
     try {
       setLoading(true);
       const data = await redisAPI.getAllKeys();
-      setKeys(data);
-    } catch (error) {
-      console.error("Error fetching keys:", error);
+      if (!mounted) return;
+      if (Array.isArray(data)) {
+        setKeys(data);
+      } else {
+        console.warn("fetchKeys: unexpected response, ignoring", data);
+      }
+    } catch (err) {
+      console.error("Error fetching keys:", err);
     } finally {
-      setLoading(false);
+      if (mounted) setLoading(false);
     }
   };
 
-  const fetchServerInfo = async () => {
+  const fetchServerInfo = async (mounted = true) => {
     try {
       const info = await redisAPI.getServerInfo();
-      setServerInfo(info);
+      if (!mounted) return;
+      // info.response can be an array of lines or a string
+      setServerInfo(info && typeof info === "object" ? info : { response: info });
     } catch (err) {
       console.error("Error fetching server info:", err);
     }
@@ -51,21 +72,20 @@ const Dashboard = () => {
     setSelectedKey(newKey);
   };
 
-  // Normalize response into array of lines
   const normalizeResponse = (response) => {
     if (!response) return [];
-    return Array.isArray(response)
-      ? response
-      : response.split(/\r?\n/).filter((line) => line.trim() !== "");
+    if (Array.isArray(response)) return response;
+    return String(response).split(/\r?\n/).filter((line) => line.trim() !== "");
   };
 
-  // Parse INFO response into a map
   const parseInfo = (response) => {
     const lines = normalizeResponse(response);
     const map = {};
     lines.forEach((line) => {
       if (!line.startsWith("#") && line.includes(":")) {
-        const [k, v] = line.split(":");
+        const idx = line.indexOf(":");
+        const k = line.slice(0, idx).trim();
+        const v = line.slice(idx + 1).trim();
         map[k] = v;
       }
     });
@@ -73,11 +93,11 @@ const Dashboard = () => {
   };
 
   const parsedInfo = serverInfo ? parseInfo(serverInfo.response) : {};
-  const usedMemory = parsedInfo.used_memory
-    ? parseInt(parsedInfo.used_memory, 10)
-    : 0;
-  const totalMemory = 1024 * 1024 * 100; // assume 100MB for demo, or fetch from INFO if available
+  const usedMemory = parsedInfo.used_memory ? parseInt(parsedInfo.used_memory, 10) : 0;
+  const totalMemory = parsedInfo.total_system_memory ? parseInt(parsedInfo.total_system_memory, 10) || (1024 * 1024 * 100) : (1024 * 1024 * 100);
   const memoryPercent = totalMemory ? (usedMemory / totalMemory) * 100 : 0;
+
+  const hasServerStats = parsedInfo && (parsedInfo.role || parsedInfo.used_memory_human || parsedInfo.used_memory);
 
   return (
     <div className="dashboard">
@@ -85,7 +105,7 @@ const Dashboard = () => {
         <div className="header-left">
           <img src={redisLogo} alt="Redis Logo" className="redis-logo" />
 
-          {serverInfo && (
+          {hasServerStats && (
             <div
               className="server-info-bar"
               onClick={() => setShowFullInfo(!showFullInfo)}
@@ -94,27 +114,19 @@ const Dashboard = () => {
                 <span className="label">Role:</span> {parsedInfo.role}
               </div>
               <div className="server-stat">
-                <span className="label">Memory:</span>{" "}
-                {parsedInfo.used_memory_human}
+                <span className="label">Memory:</span> {parsedInfo.used_memory_human}
                 <div className="progress-bar">
-                  <div
-                    className="progress-fill"
-                    style={{ width: `${memoryPercent}%` }}
-                  ></div>
+                  <div className="progress-fill" style={{ width: `${memoryPercent}%` }}></div>
                 </div>
               </div>
               <div className="server-stat">
-                <span className="label">Slaves:</span>{" "}
-                {parsedInfo.connected_slaves}
+                <span className="label">Slaves:</span> {parsedInfo.connected_slaves}
               </div>
             </div>
           )}
         </div>
 
-        <button
-          className="terminal-toggle"
-          onClick={() => setShowTerminal(!showTerminal)}
-        >
+        <button className="terminal-toggle" onClick={() => setShowTerminal(!showTerminal)}>
           [Terminal]
         </button>
       </header>
@@ -123,7 +135,7 @@ const Dashboard = () => {
         <div className="server-info-expanded">
           {(() => {
             const sections = {};
-            const ignoreKeys = ["master_replid", "used_memory"]; // ignore noisy/duplicate
+            const ignoreKeys = ["master_replid", "used_memory"];
 
             const lines = normalizeResponse(serverInfo.response);
 
@@ -137,22 +149,16 @@ const Dashboard = () => {
                 value = value.trim();
 
                 if (!ignoreKeys.includes(key)) {
-                  // prettify key
                   let prettyKey = key.replace(/_/g, " ");
                   prettyKey = prettyKey
                     .split(" ")
                     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
                     .join(" ");
 
-                  // special rename
-                  if (key === "used_memory_human") {
-                    prettyKey = "Used Memory (MB)";
-                  }
+                  if (key === "used_memory_human") prettyKey = "Used Memory (MB)";
 
                   const currentSection = Object.keys(sections).pop();
-                  if (currentSection) {
-                    sections[currentSection].push({ key: prettyKey, value });
-                  }
+                  if (currentSection) sections[currentSection].push({ key: prettyKey, value });
                 }
               }
             });
@@ -175,13 +181,7 @@ const Dashboard = () => {
       )}
 
       <div className="dashboard-content">
-        <Sidebar
-          keys={keys}
-          onKeySelect={handleKeySelect}
-          onAddKey={handleAddKey}
-          selectedKey={selectedKey}
-          loading={loading}
-        />
+        <Sidebar keys={keys} onKeySelect={handleKeySelect} onAddKey={handleAddKey} selectedKey={selectedKey} loading={loading} />
         <KeyDetails selectedKey={selectedKey} onRefresh={fetchKeys} />
       </div>
 

@@ -62,9 +62,8 @@ const KeyDetails = ({ selectedKey, onRefresh }) => {
     return (
       <div className="key-details empty">
         <div className="empty-state">
-          <h2>Key Details</h2>
           <p>Select a key to view its contents</p>
-          <div className="empty-icon">[Empty State]</div>
+          <div className="empty-icon"></div>
         </div>
       </div>
     );

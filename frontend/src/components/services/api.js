@@ -1,29 +1,73 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = 'http://localhost:3001/api/commands';
+const API_BASE_URL = "http://localhost:3001/api/commands";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
+
+function normalizeKeyItem(item) {
+  if (!item) return null;
+  if (typeof item === "string") return { name: item, type: "string" };
+  if (typeof item === "object") {
+    if (item.name) return { name: String(item.name), type: item.type || "string" };
+    if (Array.isArray(item) && item.length >= 1) return { name: String(item[0]), type: String(item[1] || "string") };
+  }
+  return null;
+}
 
 export const redisAPI = {
   // Get all keys
   getAllKeys: async () => {
-    const response = await api.get('/keys');
-    return response.data.keys; // Return the keys array
+    try {
+      const resp = await api.get("/keys");
+      const payload = resp.data ?? {};
+      // backend shapes: { keys: [...] } or { success: true, keys: [...] } or { data: [...] }
+      let raw = payload.keys ?? payload.result ?? payload.data ?? payload;
+      // if payload itself is an object with info/server response, bail out
+      if (raw && typeof raw === "object" && !Array.isArray(raw) && ("info" in raw || "response" in raw)) {
+        return [];
+      }
+      // if top-level wrapper includes success and keys under another key
+      if (!Array.isArray(raw) && typeof raw === "object") {
+        // maybe it's { success:true, keys: [...] }
+        if (Array.isArray(payload.keys)) raw = payload.keys;
+        else if (Array.isArray(payload.result)) raw = payload.result;
+        else raw = Object.keys(raw).map(k => ({ name: k, type: "string" }));
+      }
+      if (!Array.isArray(raw)) return [];
+      return raw.map(normalizeKeyItem).filter(Boolean);
+    } catch (e) {
+      console.error("getAllKeys error", e);
+      return [];
+    }
   },
 
   // Get key details
   getKeyDetails: async (key) => {
-    const response = await api.get(`/keys/${encodeURIComponent(key)}`);
-    return response.data;
+    const resp = await api.get(`/keys/${encodeURIComponent(key)}`);
+    return resp.data ?? {};
   },
   getServerInfo: async () => {
-    const response = await api.post('/execute', { command: 'info' });
-    return response.data.result;
+    try {
+      const resp = await api.get("/info");
+      const payload = resp.data ?? {};
+      // backend sample: { success: true, info: [ "# Server", "role:master", ... ] }
+      let info = payload.info ?? payload.result ?? payload.data ?? payload;
+      // if info is an object with nested shape, try common fields
+      if (info && typeof info === "object" && !Array.isArray(info)) {
+        if (Array.isArray(info.info)) info = info.info;
+        else if (typeof info.response === "string") info = info.response;
+        else info = payload.info ?? payload.result ?? "";
+      }
+      return { response: info };
+    } catch (e) {
+      console.error("getServerInfo error", e);
+      return { response: "" };
+    }
   },
 
   // Create key
@@ -100,7 +144,8 @@ export const redisAPI = {
   },
 
   executeCommand: async (command) => {
-    const response = await api.post('/execute', { command });
-    return response.data.result;
+    const resp = await api.post("/execute", { command });
+    const payload = resp.data ?? {};
+    return payload.result ?? payload;
   },
 };
