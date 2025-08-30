@@ -1,34 +1,70 @@
 # RedisDashboard (UI)
 
-A small React UI built with Vite to showcase a custom Redis-compatible server implementation (Codecrafter challenge). The UI provides a simple dashboard for browsing keys, viewing server INFO, inspecting key values, and running arbitrary Redis commands.
+A lightweight React-based dashboard for interacting with a custom **Redis-compatible server implementation** (built as part of the Codecrafters Redis challenge).  
+The UI provides a simple way to browse keys, inspect values, monitor server stats, and run arbitrary Redis commands.
 
-This repository contains a backend (Express) and a frontend (Vite + React). The frontend is intentionally defensive about API shapes so it can tolerate responses from the custom Redis clone.
+---
 
-## Features
-- Keys list with basic metadata (name, type)
-- Key details viewer for common types (string, list, set, hash, zset, stream)
-- Simple command terminal to run arbitrary Redis commands
-- Server INFO display and lightweight stats bar
-- Create / delete keys and basic set operations from the UI
-- Defensive API client to avoid UI race conditions when backend responses vary
+## ✨ Features
 
-## Quickstart
+- **Keys list** with basic metadata (name, type)  
+- **Key details viewer** for common types (string, list, set, hash, zset, stream)  
+- **Command terminal** to run arbitrary Redis commands  
+- **Server INFO & stats bar** (role, memory usage, connected clients, etc.)  
+- **Create and delete keys** directly from the UI  
+- **Basic set operations** from the UI  
 
-Prerequisites:
-- Node 18+ (or compatible)
-- npm
+---
 
-Start backend:
-````bash
+## 🚀 Quickstart
+
+### 1. Prerequisites
+
+- A Redis-compatible server running on port **6379**  
+  > You can change the port in the `.env` file inside the `backend` folder.  
+  > More info: [Redis-Clone Repository](https://github.com/Momensamir12/Redis-Clone-)  
+- Node.js **18+**  
+- npm  
+
+---
+
+### 2. Start the Backend
+
+```bash
 # from repo root
 cd backend
 npm install
 npm run dev
+```
 
-start frontend :
+### 3. Start the Frontend
 
-````bash
+```bash
 # from repo root
 cd frontend
 npm install
 npm run dev
+```
+
+### 4. Access the Dashboard
+
+Open your browser and go to:
+```
+http://localhost:5173/
+```
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend:** React
+- **Backend:** Node.js
+
+---
+
+## 🎥 Demo
+
+A short demo of the UI can be found here:
+```
+frontend/src/demoui.web
+```
