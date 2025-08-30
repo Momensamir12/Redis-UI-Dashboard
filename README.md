@@ -21,8 +21,8 @@ The UI provides a simple way to browse keys, inspect values, monitor server stat
 ### 1. Prerequisites
 
 - A Redis-compatible server running on port **6379**  
-  > You can change the port in the `.env` file inside the `backend` folder.  
-  > More info: [Redis-Clone Repository](https://github.com/Momensamir12/Redis-Clone-)  
+   You can change the port in the `.env` file inside the `backend` folder.  
+   More info on running the redis server : [Redis-Clone Repository](https://github.com/Momensamir12/Redis-Clone-)  
 - Node.js **18+**  
 - npm  
 
